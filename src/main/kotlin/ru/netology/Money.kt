@@ -10,7 +10,7 @@ import kotlin.math.min
 val cardType = listOf("Mastercard", "Maestro", "Visa", "Мир", "VKPay")
 
 val money = 10_000 // руб сумма для перевода
-val cardT = cardType[2] // с какого счета делаем перевод
+val cardT = cardType[4] // с какого счета делаем перевод
 
 
 var currDaySum = 0
@@ -33,8 +33,8 @@ fun calculationFee(
     summa: Int
 ): Double {
 
-    when {
-        cardType == "Visa" || cardType == "Мир" -> {
+    when (cardType) {
+        "Visa", "Мир" -> {
             val stavkaDefault = 0.75 // %
             val stavkaMin = 35 * convRubKop // коп
 
@@ -42,9 +42,10 @@ fun calculationFee(
             if (fee < stavkaMin) fee = stavkaMin.toDouble()
             return fee
         }
-        cardType == "Mastercard" || cardType == "Maestro" -> {
-            if (money < 75_000) return 0.0 else {
-                return money * convRubKop * 0.6 / 100 + 20 * convRubKop
+        "Mastercard", "Maestro" -> {
+            return if (money < 75_000) 0.0
+            else {
+                money * convRubKop * 0.6 / 100 + 20 * convRubKop
             }
         }
         else -> return 0.0
