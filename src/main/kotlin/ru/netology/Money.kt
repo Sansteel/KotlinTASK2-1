@@ -1,7 +1,5 @@
 package ru.netology
 
-import kotlin.math.min
-
 /** ПРИМЕЧАНИЕ
  * так как в задании нет указаний на объявление типа перевода: входящий/исходящий,
  * принимаю допущение что все переводы в рамках данного ДЗ являются ВХОДЯЩИМИ
@@ -23,7 +21,7 @@ const val convRubKop: Int = 100 //конвертер рублей в копей�
 
 fun main() {
 
-    printResult(calculationFee(cardType = cardT, summa = money), checkLimits(cardT))
+    printResult(money, cardT, calculationFee(cardType = cardT, summa = money), checkLimits(cardT, money))
 
 }
 
@@ -31,73 +29,73 @@ fun calculationFee(
     cardType: String,
     limit: Int = 0,
     summa: Int
-): Double {
+): Int {
 
     when (cardType) {
         "Visa", "Мир" -> {
             val stavkaDefault = 0.75 // %
             val stavkaMin = 35 * convRubKop // коп
 
-            var fee: Double = (money * convRubKop * stavkaDefault) / 100
+            var fee: Double = (summa * convRubKop * stavkaDefault) / 100
             if (fee < stavkaMin) fee = stavkaMin.toDouble()
-            return fee
+            return fee.toInt()
         }
         "Mastercard", "Maestro" -> {
-            return if (money < 75_000) 0.0
+            return if (summa < 75_000) 0
             else {
-                money * convRubKop * 0.6 / 100 + 20 * convRubKop
+                (summa * convRubKop * 0.6 / 100 + 20 * convRubKop).toInt()
             }
         }
-        else -> return 0.0
+        else -> return 0
     }
 }
 
-fun checkLimits(cardType: String): Boolean {
+fun checkLimits(cardType: String, summa: Int): Boolean {
 
 
     val dayLimit = 150_000 * convRubKop //коп
     val monthLimitIn = 600_000 * convRubKop //коп
     val monthLimitOut = 600_000 * convRubKop //коп
 
-    val VkLimit = 15_000 * convRubKop
-    val VkLimitMonth = 40_000 * convRubKop
+    val vkLimit = 15_000 * convRubKop
+    val vkLimitMonth = 40_000 * convRubKop
 
-    var ostatok: Int = money * convRubKop //коп
+    var ostatok: Int = summa * convRubKop //коп
 
     if (cardType != "VKPay") {
         val dayOstatok: Int = dayLimit - currDaySum
         val monthOstatokIn: Int = monthLimitIn - currMonthSumIn
         val monthOstatokOut: Int = monthLimitOut - currMonthSumOut
 
-        if (dayOstatok < money * convRubKop || monthOstatokIn < money * convRubKop || monthOstatokOut < money * convRubKop) {
+        return if (dayOstatok < summa * convRubKop || monthOstatokIn < summa * convRubKop || monthOstatokOut < summa * convRubKop) {
             ostatok = 0
             println("Превышен лимит операций #1")
-            return false
+            false
         } else {
-            currDaySum += money * convRubKop
-            currMonthSumIn += money * convRubKop
-            return true
+            currDaySum += summa * convRubKop
+            currMonthSumIn += summa * convRubKop
+            true
         }
     } else {
-        if (money * convRubKop >= VkLimit || money * convRubKop >= VkLimitMonth) {
+        return if (summa * convRubKop >= vkLimit || summa * convRubKop >= vkLimitMonth) {
             println("Превышен лимит операций #2")
-            return false
+            false
         } else {
-            val vkMonthOstatok = VkLimitMonth - vkMonthSum
-            if (money * convRubKop > vkMonthOstatok) {
+            val vkMonthOstatok = vkLimitMonth - vkMonthSum
+            if (summa * convRubKop > vkMonthOstatok) {
                 println("Превышен лимит операций #3")
-                return false
+                false
             } else {
-                vkMonthSum += money * convRubKop
-                return true
+                vkMonthSum += summa * convRubKop
+                true
             }
         }
     }
 }
 
-fun printResult(amount: Double, limit: Boolean) {
+fun printResult(summa: Int, cardType: String, amount: Int, limit: Boolean) {
     if (limit) println(
-        "Комиссия за перевод суммы " + money + " руб со счета " +
-                cardT + " составит " + (amount / convRubKop) + " руб"
+        "Комиссия за перевод суммы " + summa + " руб со счета " +
+                cardType + " составит " + (amount / convRubKop) + " руб"
     )
 }
