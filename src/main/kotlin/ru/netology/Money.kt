@@ -5,6 +5,8 @@ package ru.netology
  * принимаю допущение что все переводы в рамках данного ДЗ являются ВХОДЯЩИМИ
  */
 
+//fixme test string
+
 val cardType = listOf("Mastercard", "Maestro", "Visa", "Мир", "VKPay")
 
 val money = 10_000 // руб сумма для перевода
