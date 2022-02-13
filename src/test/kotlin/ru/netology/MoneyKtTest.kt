@@ -6,6 +6,7 @@ import org.junit.Assert.*
 
 class MoneyKtTest {
 
+
     @Test
     fun calculationFee_Mastercard_70_000() {
         // arrange
@@ -166,4 +167,5 @@ class MoneyKtTest {
         // assert
         assertEquals(expectedResult, actualResult)
     }
+
 }
