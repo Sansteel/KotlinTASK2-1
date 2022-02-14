@@ -9,7 +9,7 @@ package ru.netology
 val cardType = listOf("Mastercard", "Maestro", "Visa", "Мир", "VKPay")
 
 val money = 10_000 // руб сумма для перевода
-val cardT = cardType[3] // с какого счета делаем перевод todo ломаем сборку
+val cardT = cardType[3] // с какого счета делаем перевод
 
 
 var currDaySum = 0
